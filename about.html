@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SUNCOM — À propos · e2w Holding</title>
+<link href="https://fonts.googleapis.com/css2?family=Michroma&family=DM+Sans:wght@300;400;500&family=Orbitron:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #FAFAF8; --bg-bloc: #FAFAF8; --bg-nav: rgba(250,250,248,0.92);
+    --border: rgba(0,0,0,0.08); --text: #0D1B2A; --text-sub: #6B6A65;
+    --text-muted: #C8C7C2; --footer-meta: #C8C7C2;
+  }
+  body.dark {
+    --bg: #0D1B2A; --bg-bloc: #1A2B3C; --bg-nav: rgba(13,27,42,0.95);
+    --border: rgba(255,255,255,0.07); --text: #FAFAF8;
+    --text-sub: rgba(255,255,255,0.4); --text-muted: rgba(255,255,255,0.2);
+    --footer-meta: rgba(255,255,255,0.2);
+  }
+
+  html { scroll-behavior: smooth; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); font-size: 15px; line-height: 1.6; overflow-x: hidden; transition: background 0.4s, color 0.4s; }
+
+  /* NAV */
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 0 3rem; height: 64px; display: flex; align-items: center; justify-content: space-between; background: var(--bg-nav); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); transition: background 0.4s, border-color 0.4s; }
+  .nav-logo { font-family: 'Michroma', sans-serif; font-size: 16px; letter-spacing: 0.12em; color: var(--text); text-decoration: none; transition: color 0.4s; }
+  .nav-logo span { color: #00C9B1; }
+  .nav-right { display: flex; align-items: center; gap: 12px; }
+  .theme-toggle { display: flex; align-items: center; gap: 6px; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-sub); cursor: pointer; border: 1px solid var(--border); padding: 6px 12px; border-radius: 20px; background: transparent; transition: all 0.2s; font-family: 'DM Sans', sans-serif; }
+  .theme-toggle:hover { border-color: #00C9B1; color: #00C9B1; }
+  .nav-back { font-size: 12px; font-weight: 500; letter-spacing: 0.05em; color: var(--text); text-decoration: none; border: 1px solid var(--border); padding: 7px 18px; border-radius: 2px; transition: all 0.2s; }
+  body.dark .nav-back { color: #00C9B1; border-color: rgba(0,201,177,0.3); }
+  body.dark .nav-back:hover { background: rgba(0,201,177,0.1); border-color: #00C9B1; }
+
+  /* LAYOUT */
+  .page { max-width: 960px; margin: 0 auto; padding: 100px 3rem 6rem; }
+
+  /* HEADER PAGE */
+  .page-header { margin-bottom: 5rem; border-bottom: 1px solid var(--border); padding-bottom: 3rem; }
+  .page-eyebrow { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #00C9B1; margin-bottom: 1rem; }
+  .page-title { font-family: 'Michroma', sans-serif; font-size: clamp(28px, 5vw, 48px); letter-spacing: 0.06em; color: var(--text); margin-bottom: 0.75rem; transition: color 0.4s; }
+  .page-title span { color: #00C9B1; }
+  .page-sub { font-size: 13px; color: var(--text-sub); font-weight: 300; }
+
+  /* E2W BLOC */
+  .e2w-bloc { background: var(--bg-bloc); border: 1px solid var(--border); border-radius: 2px; padding: 2.5rem; margin-bottom: 5rem; transition: background 0.4s, border-color 0.4s; }
+  .e2w-label { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: #00C9B1; margin-bottom: 1.5rem; }
+  .e2w-name { font-family: 'Michroma', sans-serif; font-size: 20px; letter-spacing: 0.08em; color: var(--text); margin-bottom: 0.5rem; }
+  .e2w-address { font-size: 14px; color: var(--text-sub); font-weight: 300; margin-bottom: 1.5rem; line-height: 1.8; }
+  .e2w-address strong { color: var(--text); font-weight: 500; }
+  .e2w-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+  .e2w-tag { font-size: 11px; letter-spacing: 0.08em; color: #00C9B1; border: 1px solid rgba(0,201,177,0.3); padding: 4px 12px; border-radius: 2px; }
+
+  /* SECTION TITLE */
+  .section-label { font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 3rem; display: flex; align-items: center; gap: 12px; transition: color 0.4s; }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  /* TEAM MEMBER */
+  .member { margin-bottom: 4rem; padding-bottom: 4rem; border-bottom: 1px solid var(--border); }
+  .member:last-child { border-bottom: none; }
+  .member-header { margin-bottom: 2rem; }
+  .member-name { font-family: 'Michroma', sans-serif; font-size: 22px; letter-spacing: 0.06em; color: var(--text); margin-bottom: 4px; transition: color 0.4s; }
+  .member-name span { color: #00C9B1; }
+  .member-role { font-size: 13px; color: var(--text-sub); font-style: italic; margin-bottom: 1.25rem; }
+  .member-bullets { margin-bottom: 1.5rem; }
+  .member-bullet { font-size: 13px; color: var(--text-sub); font-weight: 300; line-height: 1.7; display: flex; gap: 8px; }
+  .member-bullet::before { content: '⊙'; color: #00C9B1; font-size: 12px; margin-top: 2px; flex-shrink: 0; }
+
+  /* BIO */
+  .bio-toggle { font-size: 12px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: #00C9B1; background: none; border: none; cursor: pointer; display: flex; align-items: center; gap: 8px; padding: 0; font-family: 'DM Sans', sans-serif; margin-bottom: 1.5rem; }
+  .bio-toggle::after { content: '▾'; font-size: 10px; transition: transform 0.3s; }
+  .bio-toggle.open::after { transform: rotate(180deg); }
+  .bio-content { display: none; }
+  .bio-body p { font-size: 13.5px; font-weight: 300; color: rgba(255,255,255,0.65); line-height: 1.8; margin-bottom: 1rem; transition: color 0.4s; }
+  body:not(.dark) .bio-body p { color: rgba(13,27,42,0.7); }
+  .bio-content.open { display: block; }
+  .bio-history-title { font-size: 16px; font-weight: 500; color: var(--text); margin-bottom: 1rem; transition: color 0.4s; }
+  .bio-history-title::before { content: '⌱ '; color: #00C9B1; }
+  .bio-text { font-size: 13.5px; font-weight: 300; color: var(--text-sub); line-height: 1.8; margin-bottom: 1rem; transition: color 0.4s; }
+  .bio-quote { font-size: 13px; font-style: italic; color: var(--text-muted); border-left: 2px solid #00C9B1; padding-left: 1rem; margin-top: 1.5rem; transition: color 0.4s; }
+
+  /* LEGAL */
+  .legal-bloc { background: var(--bg-bloc); border: 1px solid var(--border); border-radius: 2px; padding: 2.5rem; margin-top: 5rem; transition: background 0.4s, border-color 0.4s; }
+  .legal-title { font-family: 'Michroma', sans-serif; font-size: 16px; letter-spacing: 0.08em; color: var(--text); margin-bottom: 2rem; transition: color 0.4s; }
+  .legal-block { margin-bottom: 2rem; }
+  .legal-block-title { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: #00C9B1; margin-bottom: 0.75rem; }
+  .legal-block-text { font-size: 13px; font-weight: 300; color: var(--text-sub); line-height: 1.8; transition: color 0.4s; }
+
+  /* FOOTER */
+  footer { border-top: 1px solid var(--border); padding: 2rem 3rem; display: flex; align-items: center; justify-content: space-between; max-width: 960px; margin: 0 auto; transition: border-color 0.4s; }
+  .footer-logo { font-family: 'Michroma', sans-serif; font-size: 13px; letter-spacing: 0.1em; color: var(--text); transition: color 0.4s; }
+  .footer-logo span { color: #00C9B1; }
+  .footer-meta { font-size: 11px; color: var(--footer-meta); letter-spacing: 0.04em; transition: color 0.4s; }
+
+  @media (max-width: 700px) {
+    nav { padding: 0 1.25rem; }
+    .page { padding: 88px 1.5rem 4rem; }
+    footer { padding: 1.5rem; flex-direction: column; gap: 8px; text-align: center; }
+    .e2w-tags { flex-direction: column; }
+  }
+</style>
+</head>
+<body class="dark">
+
+<nav>
+  <a href="index.html" class="nav-logo">SUN<span>COM</span></a>
+  <div class="nav-right">
+    <div id="langSelector"></div>
+    <button class="theme-toggle" id="themeToggle">
+      <span id="toggleIcon">○</span>
+      <span id="toggleLabel">Light</span>
+    </button>
+    <a href="index.html" class="nav-back" data-i18n="back_home">← Accueil</a>
+  </div>
+</nav>
+
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="page-header">
+    <p class="page-eyebrow" data-i18n="about_eyebrow">⌱ Groupe SUNCOM</p>
+    <h1 class="page-title">e2w <span>Holding</span></h1>
+    <p class="page-sub" data-i18n="about_sub">La structure juridique et financière derrière l'écosystème SUNCOM.</p>
+  </div>
+
+  <!-- SIÈGE SOCIAL -->
+  <div class="e2w-bloc">
+    <div class="e2w-label" data-i18n="e2w_label">Siège social</div>
+    <div class="e2w-name">e2w — SUNCOM Lab LLC</div>
+    <div class="e2w-address">
+      <span style="color:rgba(240,165,0,0.85);"><strong style="color:rgba(240,165,0,0.85);">276 5th Ave</strong> #704 — New York — NY 10001 — USA</span><br>
+      contact-e2w@pm.me
+    </div>
+    <div class="e2w-tags">
+      <span class="e2w-tag">⊕ SUNCOM Estate</span>
+      <span class="e2w-tag">⊕ SUNCOM Facilities</span>
+      <span class="e2w-tag">⊕ SUNCOM Associates</span>
+      <span class="e2w-tag">⊕ SUNCOM Lab — NYC</span>
+      <span class="e2w-tag">⊕ Buyest.io</span>
+    </div>
+  </div>
+
+  <!-- TEAM -->
+  <div class="section-label" data-i18n="section_team">Fondateurs &amp; Associés</div>
+
+  <!-- ERWAN MILBÉO -->
+  <div class="member">
+    <div class="member-header">
+      <div class="member-name">Erwan <span>MILBÉO</span></div>
+      <div class="member-role" data-i18n="erwan_role">Fondateur &amp; Associé — Président e2w · SUNCOM Associates</div>
+    </div>
+    <div class="member-bullets">
+      <div class="member-bullet" data-i18n="erwan_b1">Serial entrepreneur à l'international depuis 1991 — Immobilier &amp; Nouvelles Technologies</div>
+      <div class="member-bullet" data-i18n="erwan_b2">Fondateur et Dirigeant de Sociétés en France, Italie, Espagne, GB, Bahrein...</div>
+      <div class="member-bullet" data-i18n="erwan_b3">Jusqu'à 300 salariés dans le monde — partenariats TV Groupe Canal+ / Air France / Ibéria</div>
+    </div>
+    <button class="bio-toggle" data-i18n-bio="erwan" onclick="toggleBio(this)" data-i18n="bio_read">Lire la biographie</button>
+    <div class="bio-content">
+      <div class="bio-history-title" data-i18n="erwan_history">Un peu d'histoire</div>
+      <div class="bio-body" data-i18n-html="erwan_bio"><p class="bio-text">Né en 1966 et suite à une jeunesse de compétiteur sportif, il a reçu 3 années de formation universitaire en langues et civilisations étrangères avant de comprendre que ce choix d'orientation n'allait pas lui convenir. Il lui fallait de l'action !</p>
+      <p class="bio-text">Depuis 35 ans, créateur, dirigeant et actionnaire de sociétés à l'international dans les secteurs de l'immobilier et des nouvelles technologies. En partenariat avec les groupes Canal Plus, Air France et Ibéria, il fut le seul dirigeant à disposer d'un comptoir au nom de sa société aux aéroports de Paris et à posséder son propre avion de ligne pour accompagner sa clientèle sur les sites où étaient déployées ses luxueuses promotions immobilières à travers le monde.</p>
+      <p class="bio-text">Dès l'arrivée de l'Internet, sa société MKT Lines comptait parmi les leaders du reverse engineering et de la Search Engine Optimization. D'approche facile et d'un naturel convivial, il partage son temps entre ses activités professionnelles et sportives.</p>
+      <p class="bio-text">Il se consacre désormais activement au lancement de son nouveau projet avec la participation de ses associés et amis de longue date, William &amp; Wilfrid. Il pilote et préside e2w et la filiale SUNCOM Associates. Il est au contact des nouveaux partenaires et investisseurs. Tout entrepreneur ambitieux reçoit un accueil favorable et une écoute privilégiée au sein de son réseau professionnel.</p></div>
+    </div>
+  </div>
+
+  <!-- WILLIAM LEGENDRE -->
+  <div class="member">
+    <div class="member-header">
+      <div class="member-name">William <span>LEGENDRE</span></div>
+      <div class="member-role" data-i18n="william_role">Fondateur &amp; Associé — Président SUNCOM Facilities</div>
+    </div>
+    <div class="member-bullets">
+      <div class="member-bullet" data-i18n="william_b1">Fondateur et gérant depuis 1999 du 1er réseau d'Agents Commerciaux et Freelances</div>
+      <div class="member-bullet" data-i18n="william_b2">Leader depuis 25 ans — 57 000 Agents Commerciaux gérés — 30 000 Entreprises clientes</div>
+      <div class="member-bullet" data-i18n="william_b3">55 milliards d'euros de C.A. générés chaque année par ses équipes</div>
+    </div>
+    <button class="bio-toggle" data-i18n-bio="william" onclick="toggleBio(this)" data-i18n="bio_read">Lire la biographie</button>
+    <div class="bio-content">
+      <div class="bio-history-title" data-i18n="william_history">Un peu d'histoire</div>
+      <div class="bio-body" data-i18n-html="william_bio"><p class="bio-text">L'univers de la vente est son moteur ! Né en 1975, diplômé de l'ESC Reims puis de l'EAP Paris-Champernet, il fonde la plateforme AgentCo il y a plus de 25 ans et devient ainsi le N°1 du recrutement et de la mise en relation d'agents commerciaux indépendants avec ses entreprises clientes à travers la France, la Belgique et le Luxembourg.</p>
+      <p class="bio-text">Le monde de l'immobilier n'échappe pas à ses talents. Il est le pionnier du modèle des réseaux de mandataires indépendants et développe le sourcing des structures aujourd'hui leaders sur le marché français — telles que IAD ou SAFTI — qui représentent à eux seuls 27% du marché de l'immobilier français.</p>
+      <p class="bio-text">Associé avec Wilfrid &amp; Erwan dans e2w, il pilote et préside la filiale SUNCOM Facilities au sein de laquelle il fait vivre sa passion récente pour l'I.A. et l'automatisation au service de la prospection, de la vente et de la relation client. Le virage immobilier !</p></div>
+    </div>
+  </div>
+
+  <!-- WILFRID MEYER -->
+  <div class="member">
+    <div class="member-header">
+      <div class="member-name">Wilfrid <span>MEYER</span></div>
+      <div class="member-role" data-i18n="wilfrid_role">Fondateur &amp; Associé — Président SUNCOM Estate</div>
+    </div>
+    <div class="member-bullets">
+      <div class="member-bullet" data-i18n="wilfrid_b1">Commissaire de justice pendant 18 ans — France &amp; Canada</div>
+      <div class="member-bullet" data-i18n="wilfrid_b2">Agent Immobilier pendant 15 ans — collabore avec une vingtaine d'agences en France</div>
+      <div class="member-bullet" data-i18n="wilfrid_b3">Formateur en continu des avocats inscrits au barreau du Québec pendant 3 ans</div>
+    </div>
+    <button class="bio-toggle" data-i18n-bio="wilfrid" onclick="toggleBio(this)" data-i18n="bio_read">Lire la biographie</button>
+    <div class="bio-content">
+      <div class="bio-history-title" data-i18n="wilfrid_history">Un peu d'histoire</div>
+      <div class="bio-body" data-i18n-html="wilfrid_bio"><p class="bio-text">Né en 1965, après avoir usé ses fonds de culottes sur les bancs de la Faculté de droit de Rouen, il a exercé la profession de Commissaire de Justice pendant près de 20 ans, en France et en DOM-TOM. Il a développé parallèlement une activité de vente aux enchères de prestige pour collectionneurs du monde entier (bijoux, vins, joaillerie, parfums...) et de vente d'œuvres d'art à l'international (USA, Vénézuela...).</p>
+      <p class="bio-text">Sa passion pour la voile au long cours l'a détourné quelques années de ces activités pour son plus grand enrichissement personnel. Plus tard, le goût de l'immobilier lui est apparu lors de sa première association dans une agence montpelliéraine. Il collabore désormais avec une vingtaine d'agences en France.</p>
+      <p class="bio-text">Le projet e2w s'inscrit très précisément dans sa volonté d'aller plus loin dans l'innovation au travers d'un projet ambitieux à dimension internationale. Associé à Erwan &amp; William dans la holding, il pilote et préside les activités immobilières de la filiale SUNCOM Estate. Toujours en quête de talents pour diriger et développer les succursales à travers le monde, il sait se rendre facilement disponible.</p>
+      <p class="bio-quote">«&nbsp;L'audace a du génie, du pouvoir, de la magie&nbsp;» — Goethe</p></div>
+    </div>
+  </div>
+
+  <!-- MENTIONS LÉGALES -->
+  <div class="legal-bloc">
+    <div class="legal-title" data-i18n="legal_title">Mentions légales</div>
+
+    <div class="legal-block">
+      <div class="legal-block-title" data-i18n="legal_editor">Éditeur</div>
+      <div class="legal-block-text">
+        e2w — SUNCOM Lab LLC<br>
+        276 5th Ave #704 — New York — NY 10001 — USA<br>
+        Représentant légal : Erwan MILBÉO<br>
+        Contact : contact-e2w@pm.me
+      </div>
+    </div>
+
+    <div class="legal-block">
+      <div class="legal-block-title" data-i18n="legal_host">Hébergement</div>
+      <div class="legal-block-text">
+        Netlify, Inc.<br>
+        512 2nd Street, Suite 200 — San Francisco, CA 94107 — USA<br>
+        netlify.com
+      </div>
+    </div>
+
+    <div class="legal-block">
+      <div class="legal-block-title" data-i18n="legal_ip">Propriété intellectuelle</div>
+      <div class="legal-block-text" data-i18n-html="legal_ip_text">
+        L'ensemble des contenus présents sur ce site (textes, visuels, architecture) sont la propriété exclusive de e2w Holding et de ses filiales SUNCOM. Toute reproduction, même partielle, est interdite sans autorisation préalable écrite.
+      </div>
+    </div>
+
+    <div class="legal-block">
+      <div class="legal-block-title" data-i18n="legal_data">Données personnelles</div>
+      <div class="legal-block-text" data-i18n-html="legal_data_text">
+        Ce site ne collecte aucune donnée personnelle sans consentement explicite. Conformément au RGPD, vous disposez d'un droit d'accès, de rectification et de suppression de vos données. Pour toute demande : contact-e2w@pm.me
+      </div>
+    </div>
+
+    <div class="legal-block" style="margin-bottom:0;">
+      <div class="legal-block-title" data-i18n="legal_cookies">Cookies</div>
+      <div class="legal-block-text" data-i18n-html="legal_cookies_text">
+        Ce site utilise uniquement des cookies fonctionnels (préférence de thème). Aucun cookie publicitaire ou de traçage tiers n'est utilisé.
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-logo">SUN<span>COM</span></div>
+  <div class="footer-meta">e2w Holding — © 2026 — Tous droits réservés</div>
+</footer>
+
+<script>
+(function() {
+  const THEME_KEY = 'suncom_theme';
+  document.body.classList.add('dark');
+  const saved = localStorage.getItem(THEME_KEY);
+  if (saved === 'light') document.body.classList.remove('dark');
+
+  function updateToggle() {
+    const isDark = document.body.classList.contains('dark');
+    document.getElementById('toggleLabel').textContent = isDark ? 'Light' : 'Dark';
+    document.getElementById('toggleIcon').textContent = isDark ? '○' : '◑';
+  }
+  updateToggle();
+
+  document.getElementById('themeToggle').addEventListener('click', () => {
+    document.body.classList.toggle('dark');
+    localStorage.setItem(THEME_KEY, document.body.classList.contains('dark') ? 'dark' : 'light');
+    updateToggle();
+  });
+})();
+
+function toggleBio(btn) {
+  btn.classList.toggle('open');
+  const content = btn.nextElementSibling;
+  content.classList.toggle('open');
+  const lang = localStorage.getItem('suncom_lang') || 'fr';
+  const t = (typeof SUNCOM_LANGS !== 'undefined' && SUNCOM_LANGS[lang]) ? SUNCOM_LANGS[lang] : { bio_read: 'Lire la biographie', bio_hide: 'Masquer la biographie' };
+  btn.textContent = btn.classList.contains('open') ? t.bio_hide : t.bio_read;
+}
+</script>
+
+<script src="lang.js?v=4"></script>
+</body>
+</html>

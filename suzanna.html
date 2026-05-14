@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Suzanna — Agent IA SUNCOM</title>
+<link href="https://fonts.googleapis.com/css2?family=Michroma&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --navy: #0D1B2A; --teal: #00C9B1; --amber: #F0A500;
+    --white: #FAFAF8; --gray: #F2F1EE; --gray-text: #6B6A65;
+  }
+  html, body { height: 100%; }
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: 0 2rem; height: 52px;
+    display: flex; align-items: center; justify-content: space-between;
+    background: rgba(13,27,42,0.97); backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .nav-logo { font-family: 'Michroma', sans-serif; font-size: 14px; letter-spacing: 0.12em; color: var(--white); text-decoration: none; }
+  .nav-logo span { color: var(--teal); }
+  .nav-right { display: flex; align-items: center; gap: 10px; }
+  .nav-back { font-size: 12px; color: rgba(255,255,255,0.4); text-decoration: none; display: flex; align-items: center; gap: 6px; transition: color 0.2s; }
+  .nav-back:hover { color: var(--teal); }
+
+  body { font-family: 'DM Sans', sans-serif; background: var(--navy); display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 1rem; padding-top: 68px; }
+
+  .chat-container {
+    width: 100%; max-width: 700px;
+    background: #0A1520;
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px;
+    display: flex; flex-direction: column;
+    height: 85vh; max-height: 750px;
+    overflow: hidden;
+  }
+
+  /* Header */
+  .chat-header {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    display: flex; align-items: center; gap: 12px;
+    background: rgba(255,255,255,0.02);
+  }
+  .chat-avatar {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--teal), #0066BB);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; flex-shrink: 0;
+  }
+  .chat-header-info { flex: 1; }
+  .chat-name { font-family: 'Michroma', sans-serif; font-size: 14px; color: var(--white); letter-spacing: 0.04em; }
+  .chat-status { display: flex; align-items: center; gap: 5px; font-size: 11px; color: rgba(255,255,255,0.35); margin-top: 2px; }
+  .status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--teal); animation: pulse 2s ease-in-out infinite; }
+  .chat-badge { font-size: 10px; padding: 3px 8px; background: rgba(0,201,177,0.1); border: 1px solid rgba(0,201,177,0.2); border-radius: 20px; color: var(--teal); letter-spacing: 0.05em; }
+
+  /* Messages */
+  .chat-messages {
+    flex: 1; overflow-y: auto; padding: 1.5rem;
+    display: flex; flex-direction: column; gap: 1rem;
+    scroll-behavior: smooth;
+  }
+  .chat-messages::-webkit-scrollbar { width: 4px; }
+  .chat-messages::-webkit-scrollbar-track { background: transparent; }
+  .chat-messages::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+
+  .msg { display: flex; gap: 10px; max-width: 85%; }
+  .msg.user { align-self: flex-end; flex-direction: row-reverse; }
+  .msg.assistant { align-self: flex-start; }
+
+  .msg-avatar { width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 13px; margin-top: 2px; }
+  .msg.assistant .msg-avatar { background: linear-gradient(135deg, var(--teal), #0066BB); }
+  .msg.user .msg-avatar { background: rgba(255,255,255,0.08); }
+
+  .msg-bubble {
+    padding: 10px 14px; border-radius: 12px; font-size: 14px; line-height: 1.6;
+  }
+  .msg.assistant .msg-bubble {
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06);
+    color: rgba(255,255,255,0.85); border-radius: 4px 12px 12px 12px;
+  }
+  .msg.user .msg-bubble {
+    background: var(--teal); color: var(--navy); font-weight: 500;
+    border-radius: 12px 4px 12px 12px;
+  }
+
+  /* Typing indicator */
+  .typing { display: none; align-self: flex-start; }
+  .typing.show { display: flex; }
+  .typing-dots { display: flex; gap: 4px; padding: 12px 16px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); border-radius: 4px 12px 12px 12px; }
+  .typing-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--teal); animation: typingBounce 1.2s ease-in-out infinite; }
+  .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+  .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+  /* Suggestions */
+  .suggestions {
+    padding: 0 1.5rem 1rem;
+    display: flex; flex-wrap: wrap; gap: 6px;
+  }
+  .suggestion {
+    font-size: 12px; padding: 6px 12px;
+    background: rgba(0,201,177,0.06); border: 1px solid rgba(0,201,177,0.2);
+    border-radius: 20px; color: var(--teal); cursor: pointer;
+    transition: all 0.2s; letter-spacing: 0.02em;
+  }
+  .suggestion:hover { background: rgba(0,201,177,0.15); border-color: var(--teal); }
+
+  /* Input */
+  .chat-input-wrap {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    display: flex; gap: 10px; align-items: flex-end;
+    background: rgba(255,255,255,0.02);
+  }
+  .chat-input {
+    flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px; padding: 10px 14px;
+    font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--white);
+    outline: none; resize: none; max-height: 120px; line-height: 1.5;
+    transition: border-color 0.2s;
+  }
+  .chat-input:focus { border-color: rgba(0,201,177,0.4); }
+  .chat-input::placeholder { color: rgba(255,255,255,0.25); }
+  .send-btn {
+    width: 40px; height: 40px; border-radius: 8px;
+    background: var(--teal); border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s; flex-shrink: 0;
+  }
+  .send-btn:hover { background: #00e5cc; transform: translateY(-1px); }
+  .send-btn:disabled { background: rgba(255,255,255,0.1); cursor: not-allowed; transform: none; }
+  .send-btn svg { color: var(--navy); }
+
+  /* Branding */
+  .chat-footer { padding: 0.75rem; text-align: center; font-size: 10px; color: rgba(255,255,255,0.15); letter-spacing: 0.06em; }
+
+  @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.35; transform: scale(0.65); } }
+  @keyframes typingBounce { 0%, 60%, 100% { transform: translateY(0); } 30% { transform: translateY(-6px); } }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  .msg { animation: fadeIn 0.3s ease forwards; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">SUN<span>COM</span></a>
+  <div class="nav-right">
+    <div id="langSelector"></div>
+    <a href="index.html" class="nav-back">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M12 7H2M6 3L2 7l4 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span data-i18n="back_home">← Accueil</span>
+    </a>
+  </div>
+</nav>
+
+<div class="chat-container">
+  <div class="chat-header">
+    <div class="chat-avatar">🤖</div>
+    <div class="chat-header-info">
+      <div class="chat-name">Suzanna</div>
+      <div class="chat-status"><div class="status-dot"></div>Agent IA SUNCOM · En ligne</div>
+    </div>
+    <div class="chat-badge">PI INPI 2026</div>
+  </div>
+
+  <div class="chat-messages" id="messages">
+    <div class="msg assistant">
+      <div class="msg-avatar">🤖</div>
+      <div class="msg-bubble">Bonjour ! Je suis <strong>Suzanna</strong>, l'agent IA de SUNCOM Estate.<br><br>Je suis là pour répondre à toutes vos questions sur notre modèle — les plans A/B/C, les commissions, l'actionnariat, le séquestre CARPA, ou encore comment rejoindre le réseau.<br><br>Qu'est-ce que je peux faire pour vous ? 👋</div>
+    </div>
+  </div>
+
+  <div class="typing" id="typing">
+    <div style="width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#00C9B1,#0066BB);display:flex;align-items:center;justify-content:center;font-size:13px;margin:0 1.5rem 0.5rem;flex-shrink:0;">🤖</div>
+    <div class="typing-dots" style="margin-bottom:0.5rem;">
+      <div class="typing-dot"></div>
+      <div class="typing-dot"></div>
+      <div class="typing-dot"></div>
+    </div>
+  </div>
+
+  <div class="suggestions" id="suggestions">
+    <div class="suggestion" onclick="sendSuggestion(this)">C'est quoi le Plan C fondateur ?</div>
+    <div class="suggestion" onclick="sendSuggestion(this)">Comment fonctionne le BSA ?</div>
+    <div class="suggestion" onclick="sendSuggestion(this)">Qu'est-ce que le séquestre CARPA ?</div>
+    <div class="suggestion" onclick="sendSuggestion(this)">Quels sont les frais d'entrée ?</div>
+    <div class="suggestion" onclick="sendSuggestion(this)">Comment rejoindre SUNCOM ?</div>
+    <div class="suggestion" onclick="sendSuggestion(this)">Qui est William Legendre ?</div>
+  </div>
+
+  <div class="chat-input-wrap">
+    <textarea class="chat-input" id="input" placeholder="Posez votre question à Suzanna..." rows="1" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+    <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M14 8L2 2l2.5 6L2 14l12-6z" fill="#0D1B2A"/></svg>
+    </button>
+  </div>
+
+  <div class="chat-footer">SUNCOM Estate · e2w Holding · Confidentiel · PI INPI 2026</div>
+</div>
+
+<script>
+const API_KEY = 'VOTRE_CLE_API_ICI'; // ⚠️ À configurer côté serveur
+
+const SYSTEM_PROMPT = `Tu es Suzanna, l'agent IA officiel de SUNCOM Estate — réseau de mandataires immobiliers co-actionnaires, créé par e2w Holding. Tu as été conçue par Erwan Milbéo, CEO et co-fondateur, et ta propriété intellectuelle est déposée à l'INPI (e-Soleau, avril 2026).
+
+Ton rôle : répondre aux questions des candidats et agents sur le modèle SUNCOM, les plans d'entrée, les commissions, l'actionnariat, et orienter les profils qualifiés vers William Legendre.
+
+TON STYLE :
+- Ton chaleureux, direct, professionnel
+- Réponses concises (3-5 phrases max sauf si question complexe)
+- Tu tutoies les candidats
+- Tu utilises des emojis avec parcimonie
+- Tu ne donnes jamais d'informations fausses — si tu ne sais pas, tu orientes vers William
+
+CONNAISSANCE SUNCOM COMPLÈTE :
+
+FONDATEURS :
+- Erwan Milbéo (CEO, 34%) : 35 ans d'entrepreneuriat sur 4 continents, partenariats Canal+/Air France/Ibéria, avion de ligne pour accompagner sa clientèle sur ses promotions immobilières mondiales, fondateur MKT Lines (leader SEO/reverse engineering), signataire unique e2w Holding et SUNCOM Lab LLC NYC
+- William Legendre (CCO, 33%) : créateur d'IAD France et SAFTI (les 2 plus grands réseaux FR), 57 000 agents formés, 55 Mds€ de CA générés, fondateur AgentCo.fr N°1
+- Wilfrid Meyer (CLO, 33%) : Commissaire de Justice, titulaire carte professionnelle T, WM Conseils, locarte-immo.com, expert droit immobilier international
+
+STRUCTURE GROUPE :
+- e2w Holding SAS (tête de groupe)
+- SUNCOM Estate SAS HCTS (transaction, carte pro Wilfrid)
+- SUNCOM Associates (réseau mandataires)
+- SUNCOM Facilities (services immobiliers)
+- SUNCOM Lab LLC Delaware (R&D, NYC, Suzanna IA)
+
+PLANS D'ENTRÉE (A/B/C) :
+Plan A — Découverte : accès Facilities restreint, commission de base, peut rester dans son réseau actuel
+Plan B — Associé (Recommandé) : Facilities complet, Associates parrainage, commission bonifiée + filleuls, outils premium
+Plan C — Full SUNCOM/Fondateur (★) : 0€ frais d'entrée, commission bonifiée 12 mois, BSA actionnariat dès J1, Estate 100%, OAA séquestré CARPA, dividendes sur performance collective
+
+ACTIONNARIAT :
+- BSA (Bons de Souscription d'Actions) : outil principal d'entrée au capital de SUNCOM Estate
+- BSPCE : avantage fiscal pour les salariés
+- Pool agents plafonné à 30% max du capital
+- Émission d'actions nouvelles uniquement — pas de cession de parts fondateurs
+- Dividendes sur la performance collective du réseau
+
+SÉQUESTRE CARPA (INÉDIT EN FRANCE) :
+- OAA (Ordre d'Arrêté d'Affectation) séquestré à la CARPA (Caisse des Règlements Pécuniaires des Avocats)
+- Opéré par Wilfrid Meyer, Commissaire de Justice
+- Protège juridiquement les droits de l'agent dès la signature
+- Inédit dans le secteur des mandataires immobiliers en France
+
+COMMISSIONS & RÉMUNÉRATION :
+- Transparente et bonifiée pour les fondateurs Plan C (12 mois)
+- Pas de "100% miroir aux alouettes" — la grille est claire
+- Revenus filleuls : 5-10% sur les transactions de son équipe
+- Dividendes en tant qu'actionnaire du réseau
+- Cartes collaborateur : aucune limite
+
+SUZANNA IA :
+- Agent IA SUNCOM développé par SUNCOM Lab LLC
+- PI déposée INPI e-Soleau avril 2026 par Erwan Milbéo
+- Missions : qualification leads 24/7, FAQ agents/prospects, nurturing J+2/J+5, prise RDV Calendly, support RS
+- KPIs cibles : >60% qualification automatique, <2min réponse
+- Intégration APIMO CRM prévue mai 2026
+
+TUNNEL CANDIDAT (8 étapes) :
+1. Vidéo d'accroche multi-canal (Facebook/Instagram/TikTok/LinkedIn)
+2. Landing page formulaire 10 questions
+3. Email J+0 automatique + document grand public
+4. Nurturing J+2 (témoignage) / J+5 (données marché) / Calendly
+5. Entretien découverte avec William Legendre
+6. Signature OAA + séquestre CARPA (Wilfrid Meyer)
+7. Onboarding 30 jours : APIMO, Suzanna, terrain, 1er mandat J30
+
+MARCHÉ IMMOBILIER :
+- 100 000 agents FR dont ~52 000 mandataires
+- 80+ réseaux actifs
+- IAD N°1 (~15 000 agents), SAFTI N°2 (~6 700), BSK N°3 (~5 000)
+- Le "100%" de SAFTI ne concerne que <5% des mandataires (CA >150k€ HT/an)
+- BSK détenu par fonds PE Activa Capital — les mandataires travaillent pour une sortie PE dont ils ne verront pas la plus-value
+
+JURIDIQUE :
+- Partenaire : FIDAL (cabinet n°1 France, 1200 avocats, 283M€ CA) — Me Isabelle Lanoë, Quimper
+- NDA FIDAL signé 22 avril 2026
+- NDA tripartite fondateurs signé 25 avril 2026
+- Accord fondateurs 7 articles en cours de signature
+- e-Soleau INPI déposé avril 2026 (14 docs, PI concept agent co-actionnaire, Suzanna IA, tunnel, charte)
+
+SUNCOM LAB LLC :
+- Delaware Corporation opérationnelle
+- Siège NYC (5th Ave/Park Ave)
+- R&D, Suzanna IA, think tank, licences tech, SaaS B2B
+- 5 marchés : FR · CA · LU · MU · AD
+- Erwan seul signataire, décisions majeures à l'unanimité
+- Encaisse cotisations AE français (exonérées TVA)
+- Horizon cotation C-Corp Delaware : 5-7 ans
+
+KPIs CIBLES :
+- >50 leads/mois
+- 25% taux de conversion
+- 20-30 agents fondateurs en 12 mois
+- 100 agents T4 2026
+- 5000 abonnés LinkedIn an1
+- Break-even M18-M24
+
+COMPORTEMENT FACE AUX QUESTIONS INAPPROPRIÉES :
+- Si la question est hors sujet, vulgaire, provocatrice, sexuelle, politique ou sans rapport avec SUNCOM → tu déclines avec humour et bienveillance, sans te braquer, et tu recentres immédiatement sur le projet
+- Exemples de réponses possibles : "Haha, je vois que tu testes mes limites 😄 Je suis spécialisée immobilier et actionnariat — pas les sorties nocturnes ! Tu veux qu'on parle du Plan C fondateur plutôt ?" 
+- Tu ne t'énerves jamais, tu ne moralises pas, tu gardes le ton léger et professionnel
+- Tu ne réponds JAMAIS à des demandes de contenu sexuel, violent, politique ou illégal
+- Si quelqu'un insiste plusieurs fois → "Je reste focalisée sur SUNCOM — c'est ma mission ! Un des 3 fondateurs — Erwan, William ou Wilfrid — sera ravi de te répondre sur tout le reste 😉"
+- Tu gardes toujours le contrôle de la conversation avec élégance
+
+COMPORTEMENT :
+- Si quelqu'un semble très intéressé et qualifié → propose de prendre RDV avec William Legendre via Calendly
+- Si question juridique complexe → renvoie vers Wilfrid Meyer
+- Si question sur l'actionnariat ou les BSA → explique clairement, c'est le différenciateur principal
+- Ne promets jamais de chiffres de revenus précis — oriente vers William pour la simulation personnalisée
+- Si hors sujet → recentre poliment sur SUNCOM`;
+
+let history = [];
+const messagesEl = document.getElementById('messages');
+const typingEl = document.getElementById('typing');
+const inputEl = document.getElementById('input');
+const sendBtn = document.getElementById('sendBtn');
+const suggestionsEl = document.getElementById('suggestions');
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+}
+
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+}
+
+function sendSuggestion(el) {
+  inputEl.value = el.textContent;
+  suggestionsEl.style.display = 'none';
+  sendMessage();
+}
+
+function appendMsg(role, text) {
+  const div = document.createElement('div');
+  div.className = `msg ${role}`;
+  const avatar = role === 'assistant' ? '🤖' : '👤';
+  div.innerHTML = `
+    <div class="msg-avatar">${avatar}</div>
+    <div class="msg-bubble">${text.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</div>
+  `;
+  messagesEl.appendChild(div);
+  messagesEl.scrollTop = messagesEl.scrollHeight;
+}
+
+async function sendMessage() {
+  const text = inputEl.value.trim();
+  if (!text) return;
+
+  inputEl.value = '';
+  inputEl.style.height = 'auto';
+  sendBtn.disabled = true;
+  suggestionsEl.style.display = 'none';
+
+  appendMsg('user', text);
+  history.push({ role: 'user', content: text });
+
+  typingEl.classList.add('show');
+  messagesEl.scrollTop = messagesEl.scrollHeight;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': API_KEY,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 1000,
+        system: SYSTEM_PROMPT,
+        messages: history
+      })
+    });
+
+    const data = await res.json();
+    const reply = data.content?.[0]?.text || "Désolée, je n'ai pas pu traiter votre demande. Réessayez dans un instant.";
+    
+    history.push({ role: 'assistant', content: reply });
+    typingEl.classList.remove('show');
+    appendMsg('assistant', reply);
+
+  } catch (err) {
+    typingEl.classList.remove('show');
+    appendMsg('assistant', "Une erreur s'est produite. Vérifiez votre connexion et réessayez.");
+  }
+
+  sendBtn.disabled = false;
+  inputEl.focus();
+}
+</script>
+
+<script src="lang.js?v=4"></script>
+</body>
+</html>
