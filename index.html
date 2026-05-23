@@ -579,16 +579,12 @@ function playSuncomJingle() {
     });
   });
 }
-// Jingle au clic sur le widget Buyest — délai avant navigation
-// (script en bas de page : pas besoin d'attendre DOMContentLoaded)
+// Jingle au clic sur le widget Buyest
+// target="_blank" => SUNCOM reste ouvert, pas besoin de bloquer la navigation
 (function() {
   var btn = document.querySelector('.buyest-btn');
-  if (btn) btn.addEventListener('click', function(e) {
-    e.preventDefault();
+  if (btn) btn.addEventListener('click', function() {
     playSuncomJingle();
-    setTimeout(function() {
-      window.open('https://buyest-io.vercel.app', '_blank');
-    }, 1700);
   });
 })();
 </script>
