@@ -546,6 +546,7 @@
 // ── SUNCOM Jingle ────────────────────────────────────────────
 function playSuncomJingle() {
   const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  if (ctx.state === 'suspended') ctx.resume();
   function createReverb(ctx, duration, decay) {
     const len = ctx.sampleRate * duration;
     const buf = ctx.createBuffer(2, len, ctx.sampleRate);
